@@ -2,6 +2,8 @@
 
 A personal home launcher written in Love2D/LÖVE. 
 
+![Screenshot](./readme_assets/screenshot.png)
+
 ## Instructions
 
 Install Love etc etc, clone, open in Nova, run.
