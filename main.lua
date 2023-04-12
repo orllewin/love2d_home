@@ -5,6 +5,7 @@ require "Coracle/Views/button"
 require "Coracle/Views/image"
 require "Coracle/Views/image_button"
 require "Coracle/Views/text"
+require "Coracle/Views/rect"
 require "Coracle/timer"
 require "Coracle/timers"
 
@@ -27,6 +28,17 @@ function love.load()
 	if configInfo ~= nil then
 		debug = debug .. "\nfound config..."
 		configTable = love.filesystem.load(configPath)()
+		if configTable.views ~= nil then
+			for i=1,#configTable.views do
+				local view = configTable.views[i]
+				if view[1] == "text" then
+					viewManager:add(Text(view[2], view[3], view[4]))
+				elseif view[1] == "rect" then
+					viewManager:add(Rect(view[2], view[3], view[4], view[5], view[6], view[7], view[8]))
+
+				end
+			end
+		end
 		if configTable.title ~= nil then love.window.setTitle(configTable.title) end
 		if configTable.background ~= nil then love.graphics.setBackgroundColor(rgb(configTable.background)) end
 		if configTable.fullscreen ~= nil then 
