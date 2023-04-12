@@ -32,6 +32,16 @@ function love.load()
 		if configTable.fullscreen ~= nil then 
 			love.window.setFullscreen(configTable.fullscreen, "desktop")	
 		end
+		if configTable.font ~= nil then
+			local fontPath = configTable.font
+			local fontSize = 32
+			if configTable.font_size ~= nil then
+				config:initFont(fontPath, configTable.font_size)
+			else
+				config:initFont(fontPath, 32)
+			end
+			
+		end
 		if configTable.images ~= nil then
 			for i=1,#configTable.images do
 				local im = configTable.images[i]
