@@ -112,7 +112,7 @@ width - Int
 height - Int  
 lineWidth - Int   
 cornerRadius - Int   
-colour - Hex colour String, eg. "#112233" 
+colour - Hex colour String, eg. "#112233"  
 drawType - String, "fill" or "stroke", if "fill" lineWidth is ignored
 
 Example: 
