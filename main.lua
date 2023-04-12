@@ -28,17 +28,6 @@ function love.load()
 	if configInfo ~= nil then
 		debug = debug .. "\nfound config..."
 		configTable = love.filesystem.load(configPath)()
-		if configTable.views ~= nil then
-			for i=1,#configTable.views do
-				local view = configTable.views[i]
-				if view[1] == "text" then
-					viewManager:add(Text(view[2], view[3], view[4]))
-				elseif view[1] == "rect" then
-					viewManager:add(Rect(view[2], view[3], view[4], view[5], view[6], view[7], view[8]))
-
-				end
-			end
-		end
 		if configTable.title ~= nil then love.window.setTitle(configTable.title) end
 		if configTable.background ~= nil then love.graphics.setBackgroundColor(rgb(configTable.background)) end
 		if configTable.fullscreen ~= nil then 
@@ -52,69 +41,24 @@ function love.load()
 			else
 				config:initFont(fontPath, 32)
 			end
-			
 		end
-		if configTable.images ~= nil then
-			for i=1,#configTable.images do
-				local im = configTable.images[i]
-				viewManager:add(Image(im[1], im[2], im[3], im[4]))
-			end
-		end
-		if configTable.buttons ~= nil then
-			for i=1,#configTable.buttons do
-				local b = configTable.buttons[i]
-				if b[6] == "web" then
-					viewManager:add(Button(b[1], b[2], b[3], b[4], b[5], function() 
-						love.system.openURL(b[7])
-					end))
-				end
-				if b[6] == "action" then
-					viewManager:add(Button(b[1], b[2], b[3], b[4], b[5], function() 
-						os.execute(b[7])
-					end))
-				end
-				if b[6] == "copy" then
-					viewManager:add(Button(b[1], b[2], b[3], b[4], b[5], function() 
-						love.system.setClipboardText(b[7])
-						toast("Text Copied")
-					end))
-				end
-				
-			end
-		end
-		if configTable.image_buttons ~= nil then
-			for i=1,#configTable.image_buttons do
-				local b = configTable.image_buttons[i]
-				if b[4] == "config" then
-					viewManager:add(ImageButton(b[1], b[2], b[3], function() 
-						love.system.openURL("file://"..love.filesystem.getSaveDirectory())
-					end))
-				end
-				if b[4] == "web" then
-					viewManager:add(ImageButton(b[1], b[2], b[3], function() 
-						love.system.openURL(b[7])
-					end))
-				end
-				if b[4] == "action" then
-					viewManager:add(ImageButton(b[1], b[2], b[3], function() 
-						os.execute(b[7])
-					end))
-				end
-				if b[4] == "copy" then
-					viewManager:add(ImageButton(b[1], b[2], b[3], function() 
-						love.system.setClipboardText(b[7])
-						toast("Text Copied")
-					end))
+		if configTable.views ~= nil then
+			for i=1,#configTable.views do
+				local view = configTable.views[i]
+				local viewType = view[1]
+				if viewType == "text" then
+					addText(view)
+				elseif viewType == "image" then
+					addImage(view)
+				elseif viewType == "image_button" then
+					addImageButton(view)
+				elseif viewType == "button" then
+					addButton(view)
+				elseif viewType == "rect" then
+					addRect(view)
 				end
 			end
 		end
-		if configTable.text ~= nil then
-			for i=1,#configTable.text do
-				local t = configTable.text[i]
-				viewManager:add(Text(t[1], t[2], t[3]))
-			end
-		end
-		--config()
 	else
 		debug = debug .. "\nno config..."
 		love.filesystem.write("config.lua", "{}")
@@ -144,7 +88,6 @@ function love.update(dt)
 end
 
 function love.draw()
-	 love.graphics.print("Home", 10, 10)
 	 love.graphics.print(debug, 800, 150)
 	 if toastMessage ~= nil and toastMessage ~= "" then
 	     love.graphics.print(toastMessage, 10, 860)
@@ -162,4 +105,65 @@ end
 
 function love.mousemoved(x, y, dx, dy, istouch)
 	viewManager:mousemoved(x, y, dx, dy, istouch)
+end
+
+-- View Builders ----------------------------------------------------------------------
+
+function addText(view)
+	viewManager:add(Text(view[2], view[3], view[4], view[5]))
+end
+
+function addImage(view)
+	viewManager:add(Image(view[2], view[3], view[4], view[5]))
+end
+
+function addRect(view)
+	viewManager:add(Rect(view[2], view[3], view[4], view[5], view[6], view[7], view[8], view[9]))
+end
+
+function addImageButton(view)
+	local buttonType = view[5]
+	if buttonType == "config" then
+		viewManager:add(ImageButton(view[2], view[3], view[4], function() 
+			love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+		end))
+	end
+	if buttonType == "web" then
+		viewManager:add(ImageButton(view[2], view[3], view[4], function() 
+			love.system.openURL(view[6])
+		end))
+	end
+	if buttonType == "action" then
+		viewManager:add(ImageButton(view[2], view[3], view[4], function() 
+			os.execute(view[6])
+		end))
+	end
+	if buttonType == "copy" then
+		viewManager:add(ImageButton(view[2], view[3], view[4], function() 
+			love.system.setClipboardText(view[6])
+			toast("Text Copied")
+		end))
+	end
+end
+
+function addButton(view)
+	local buttonType = view[7]
+	if buttonType == "web" then
+		viewManager:add(Button(view[2], view[3], view[4], view[5], view[6], function() 
+			love.system.openURL(view[8])
+		end))
+	elseif buttonType == "action" then
+		viewManager:add(Button(view[2], view[3], view[4], view[5], view[6], function() 
+			os.execute(view[8])
+		end))
+	elseif buttonType == "copy" then
+		viewManager:add(Button(view[2], view[3], view[4], view[5], view[6], function() 
+			love.system.setClipboardText(view[8])
+			toast("Text Copied")
+		end))
+	elseif buttonType == "config" then
+			viewManager:add(Button(view[2], view[3], view[4], view[5], view[6], function() 
+				love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+			end))
+	end
 end
