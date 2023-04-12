@@ -56,7 +56,7 @@ Example:
 ## ImageButton
 
 "image_button" - String, the view type identifier  
-path - String, path to image
+path - String, path to image  
 x - Int  
 y - Int   
 actionType - String, "web", "action", "copy", "config"  
