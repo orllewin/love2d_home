@@ -49,6 +49,5 @@ function Button:clickUp()
 end
 
 function Button:draw()
-	love.graphics.draw(self.canvas, self.x - (self.width/2), self.y - (self.height/2) + self.yOffset)
-	--love.graphics.print(self.label, self.x, self.y)
+	love.graphics.draw(self.canvas, self.x, self.y + self.yOffset)
 end

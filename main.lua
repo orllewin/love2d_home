@@ -3,12 +3,18 @@ require "Coracle/love_config"
 require "Coracle/Views/view_manager"
 require "Coracle/Views/button"
 require "Coracle/Views/image"
-require "Coracle/Views/slider"
+require "Coracle/Views/image_button"
+require "Coracle/Views/text"
+require "Coracle/timer"
+require "Coracle/timers"
 
 local config = LoveConfig()
 local viewManager = ViewManager()
+local timers = Timers()
 
 local debug = ""
+
+local toastMessage = ""
 
 function love.load()
 	love.filesystem.write(".orllewin_home", "")
@@ -40,7 +46,50 @@ function love.load()
 						love.system.openURL(b[7])
 					end))
 				end
+				if b[6] == "action" then
+					viewManager:add(Button(b[1], b[2], b[3], b[4], b[5], function() 
+						os.execute(b[7])
+					end))
+				end
+				if b[6] == "copy" then
+					viewManager:add(Button(b[1], b[2], b[3], b[4], b[5], function() 
+						love.system.setClipboardText(b[7])
+						toast("Text Copied")
+					end))
+				end
 				
+			end
+		end
+		if configTable.image_buttons ~= nil then
+			for i=1,#configTable.image_buttons do
+				local b = configTable.image_buttons[i]
+				if b[4] == "config" then
+					viewManager:add(ImageButton(b[1], b[2], b[3], function() 
+						love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+					end))
+				end
+				if b[4] == "web" then
+					viewManager:add(ImageButton(b[1], b[2], b[3], function() 
+						love.system.openURL(b[7])
+					end))
+				end
+				if b[4] == "action" then
+					viewManager:add(ImageButton(b[1], b[2], b[3], function() 
+						os.execute(b[7])
+					end))
+				end
+				if b[4] == "copy" then
+					viewManager:add(ImageButton(b[1], b[2], b[3], function() 
+						love.system.setClipboardText(b[7])
+						toast("Text Copied")
+					end))
+				end
+			end
+		end
+		if configTable.text ~= nil then
+			for i=1,#configTable.text do
+				local t = configTable.text[i]
+				viewManager:add(Text(t[1], t[2], t[3]))
 			end
 		end
 		--config()
@@ -48,19 +97,18 @@ function love.load()
 		debug = debug .. "\nno config..."
 		love.filesystem.write("config.lua", "{}")
 		--todo - show info on writing config or something
-	end
-	
-	viewManager:add(Button("Orllewin.uk", 095, 70, 180, 40, function() 
-		love.system.openURL("http://orllewin.uk/")
-	end))
-	
-	viewManager:add(Button("Open Nova", 095, 115, 180, 40, function() 
-		os.execute("open /Applications/Nova.app")
-	end))
-	
-	
-	
+	end	
 end	
+
+function toast(message)
+	timers:cancel("toast")
+	toastMessage = message
+	
+	timers:add(Timer("toast", 2000, function()
+			toastMessage = ""
+		end))
+	timers:start("toast")
+end
 
 function love.keypressed(key)
 		if key == "s" then
@@ -70,11 +118,15 @@ end
 
 
 function love.update(dt)
+	timers:update(dt)
 end
 
 function love.draw()
 	 love.graphics.print("Home", 10, 10)
-	 love.graphics.print(debug, 10, 150)
+	 love.graphics.print(debug, 800, 150)
+	 if toastMessage ~= nil and toastMessage ~= "" then
+	     love.graphics.print(toastMessage, 10, 860)
+   end
 	 viewManager:drawViews()
 end
 

@@ -24,6 +24,10 @@ return {
 		--path, x, y, scale
 		{"images/sp.png", 300, 10, 0.5},
 		{"images/a.png", 300, 400, 0.5}
+	},
+	text = {
+		--text, x, y
+		{"Hello, World!", 500, 500}
 	}
 }
 ```
