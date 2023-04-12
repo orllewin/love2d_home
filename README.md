@@ -18,8 +18,15 @@ return {
 	font = "HelveticaNeue.ttc",
 	font_size = 22,
 	views = {
-		{"rect", 645, 5, 180, 280, 1, 3, "#eeffee"},
-		{"text", "Orllewin Dev", 650, 10}
+		{"rect", 10, 10, 320, 280, nil, 4, "#ccddcc", "fill"},
+		{"text", "Orllewin Home", 15, 15, "#1d1d1d"} ,
+		{"rect", 1100, 15, 220, 100, 1, 4, "#eeffee"},
+		{"image", "images/sp.png", 300, 10, 0.5},
+		{"image", "images/a.png", 300, 400, 0.5},
+		{"button", "Orllewin", 20, 50, 220, 40, "web", "https://orllewin.uk"},
+		{"button", "Password", 20, 100, 220, 40, "copy", "secret_password"},
+		{"image_button", "images/open_save_dir.png", 1395, 855, "config"},
+		{"debug", 500, 10, "#ff00cc"}
 	}
 }
 ```
