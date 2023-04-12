@@ -26,10 +26,17 @@ function DebugText:init(x, y, colour)
 	self.fontHeight = love.graphics.getFont():getHeight()
 end
 
+function DebugText:getTime()
+	local now = os.date('*t')
+	return "" .. now.hour .. ":" .. now.min .. ":" .. now.sec
+end
+
 function DebugText:add(line)
-	table.insert(self.lines, 1, line)
+	table.insert(self.lines, 1, self:getTime() .. " - " .. line)
 	
-	--todo - delete oldest
+	if #self.lines > 15 then
+		table.remove(self.lines, 16)
+	end
 end
 
 function DebugText:draw()
@@ -38,7 +45,7 @@ function DebugText:draw()
 	
 	for i=1,#self.lines do
 		local line = self.lines[i]
-		local y = self.y + (i * (self.fontHeight + 4))
+		local y = self.y + (i * (self.fontHeight + 6))
 		love.graphics.print(line, self.x, y)
 	end
 

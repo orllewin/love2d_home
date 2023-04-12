@@ -20,7 +20,7 @@ function LoveConfig:setFont(font)
 end
 
 function LoveConfig:initFont(path, size)
-	love.graphics.setFont(love.graphics.newFont(path, size))
+	love.graphics.setFont(love.graphics.newFont(path, size, "light"))
 end
 
 function LoveConfig:default()

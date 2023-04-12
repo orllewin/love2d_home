@@ -14,8 +14,8 @@ local config = LoveConfig()
 local viewManager = ViewManager()
 local timers = Timers()
 
-local debug = ""
 local debugView = nil
+local drawGrid = false
 
 local toastMessage = ""
 
@@ -25,10 +25,8 @@ function love.load()
 	viewManager:setConfig(config)
 
 	local configPath = "config.lua"
-	debug = debug .. "load: " .. configPath
 	local configInfo = love.filesystem.getInfo(configPath)
 	if configInfo ~= nil then
-		debug = debug .. "\nfound config..."
 		configTable = love.filesystem.load(configPath)()
 		if configTable.title ~= nil then love.window.setTitle(configTable.title) end
 		if configTable.background ~= nil then love.graphics.setBackgroundColor(rgb(configTable.background)) end
@@ -63,11 +61,27 @@ function love.load()
 				end
 			end
 		end
+		log("Views loaded")
+		log("OS: " .. love.system.getOS())
+		log("Window: " .. love.graphics.getWidth() .. "x" .. love.graphics.getHeight())
+		state, percent, seconds = love.system.getPowerInfo()
+	
+	  if seconds ~= nil then
+		  local minutes = seconds/60
+		  local hours = math.floor(minutes/60)
+		  local rMinutes = minutes - (hours * 60)
+		  log("Remaining: " .. hours .. ":" .. rMinutes)
+	  end
+		log("Battery: " .. percent .. "%")
+		log("Power: " .. state)
+		
 	else
 		debug = debug .. "\nno config..."
 		love.filesystem.write("config.lua", "{}")
 		--todo - show info on writing config or something
 	end	
+	
+	smallFont = love.graphics.newFont(12)
 end	
 
 function toast(message)
@@ -81,9 +95,8 @@ function toast(message)
 end
 
 function love.keypressed(key)
-		if key == "s" then
-				love.system.openURL("file://"..love.filesystem.getSaveDirectory())
-		end
+		if key == "s" then love.system.openURL("file://"..love.filesystem.getSaveDirectory())end
+		if key == "g" then drawGrid = not drawGrid end
 end
 
 
@@ -100,6 +113,30 @@ function love.draw()
 		 love.graphics.print(toastMessage, 5, love.graphics.getHeight() - (love.graphics.getFont():getHeight() + 5))
    end
 	 viewManager:drawViews()
+	 
+	 if drawGrid then
+		 local width = love.graphics.getWidth()
+		 local height = love.graphics.getHeight()
+		 
+		 local font = love.graphics.getFont()
+		 love.graphics.setFont(smallFont)
+		 
+		 love.graphics.setColor(255, 255, 255, 1)
+		 for x=0,width,50 do
+			 love.graphics.line(x, 0, x, height)
+			 love.graphics.print("" .. x, x, 10)
+			 love.graphics.print("" .. x, x, height - 20)
+		 end
+		 
+		 for y=0,height,50 do
+				love.graphics.line(0, y, width, y)
+				love.graphics.print("" .. y, 5, y)
+				love.graphics.print("" .. y, width - 30, y)
+			end
+		 
+		 love.graphics.setFont(font)
+		 
+	 end
 end
 
 function love.mousepressed(x, y, button)
@@ -175,18 +212,34 @@ function addButton(view)
 	end
 end
 
+function log(message)
+	if debugView ~= nil then
+		debugView:add(message)
+	end
+end
+
 function addDebug(view)
 	debugView = DebugText(view[2], view[3], view[4])
 	viewManager:add(debugView)
 	
-	debugView:add("Hello")
-	debugView:add("Hello")
-	debugView:add("Hello")
-	debugView:add("Hello")
-	debugView:add("Hello")
-	debugView:add("Hello")
-	debugView:add("Hello")
-	debugView:add("Hello")
-	debugView:add("Hello")
-	debugView:add("Hello")
+	
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
+	debugView:add("-")
 end
