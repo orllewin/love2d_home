@@ -58,9 +58,9 @@ Example:
 "image_button" - String, the view type identifier  
 path - String, path to image
 x - Int  
-y - Int  
-actionType - String, "web", "action", "copy", "config" 
-payload - String, a URL, shell command, or something to copy to the system clipboard. Not needed for actionType "config"
+y - Int   
+actionType - String, "web", "action", "copy", "config"  
+payload - String, a URL, shell command, or something to copy to the system clipboard. Not needed for actionType "config"  
 
 Example
 ```
