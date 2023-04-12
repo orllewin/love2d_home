@@ -5,6 +5,7 @@ require "Coracle/Views/button"
 require "Coracle/Views/image"
 require "Coracle/Views/image_button"
 require "Coracle/Views/text"
+require "Coracle/Views/debug_text"
 require "Coracle/Views/rect"
 require "Coracle/timer"
 require "Coracle/timers"
@@ -14,6 +15,7 @@ local viewManager = ViewManager()
 local timers = Timers()
 
 local debug = ""
+local debugView = nil
 
 local toastMessage = ""
 
@@ -56,6 +58,8 @@ function love.load()
 					addButton(view)
 				elseif viewType == "rect" then
 					addRect(view)
+				elseif viewType == "debug" then
+					addDebug(view)
 				end
 			end
 		end
@@ -90,7 +94,10 @@ end
 function love.draw()
 	 love.graphics.print(debug, 800, 150)
 	 if toastMessage ~= nil and toastMessage ~= "" then
-	     love.graphics.print(toastMessage, 10, 860)
+		 love.graphics.setColor(0, 0, 0, 0.5)
+		 love.graphics.rectangle("fill", 0, love.graphics.getHeight() - (love.graphics.getFont():getHeight() + 10), love.graphics.getFont():getWidth(toastMessage) + 10, love.graphics.getFont():getHeight() + 10)
+		 love.graphics.setColor(255, 255, 255, 1)
+		 love.graphics.print(toastMessage, 5, love.graphics.getHeight() - (love.graphics.getFont():getHeight() + 5))
    end
 	 viewManager:drawViews()
 end
@@ -166,4 +173,20 @@ function addButton(view)
 				love.system.openURL("file://"..love.filesystem.getSaveDirectory())
 			end))
 	end
+end
+
+function addDebug(view)
+	debugView = DebugText(view[2], view[3], view[4])
+	viewManager:add(debugView)
+	
+	debugView:add("Hello")
+	debugView:add("Hello")
+	debugView:add("Hello")
+	debugView:add("Hello")
+	debugView:add("Hello")
+	debugView:add("Hello")
+	debugView:add("Hello")
+	debugView:add("Hello")
+	debugView:add("Hello")
+	debugView:add("Hello")
 end
